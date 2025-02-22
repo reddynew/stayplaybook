@@ -21,7 +21,8 @@ import { LogOut, User } from "lucide-react";
 
 export const Navigation = () => {
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // Changed this to true for testing purposes
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const navigate = useNavigate();
 
   const handleLogout = () => {
