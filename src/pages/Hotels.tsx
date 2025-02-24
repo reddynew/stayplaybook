@@ -1,8 +1,10 @@
-import { useState } from "react";
+
+import { useState, useMemo } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/components/ui/use-toast";
 import {
   Card,
   CardContent,
@@ -53,13 +55,32 @@ const hotels = [
 ];
 
 const Hotels = () => {
+  const { toast } = useToast();
   const [selectedHotel, setSelectedHotel] = useState<any>(null);
   const [checkIn, setCheckIn] = useState<Date>();
   const [checkOut, setCheckOut] = useState<Date>();
   const [guests, setGuests] = useState(1);
   const [location, setLocation] = useState("");
+  const [isSearched, setIsSearched] = useState(false);
+
+  const filteredHotels = useMemo(() => {
+    if (!location || !isSearched) return hotels;
+    
+    return hotels.filter(hotel => 
+      hotel.location.toLowerCase().includes(location.toLowerCase())
+    );
+  }, [location, isSearched]);
 
   const handleSearch = () => {
+    setIsSearched(true);
+    if (!location) {
+      toast({
+        title: "Please enter a location",
+        description: "Enter a city or state to search for hotels",
+        variant: "destructive",
+      });
+      return;
+    }
     console.log("Searching with:", { location, checkIn, checkOut, guests });
   };
 
@@ -73,6 +94,10 @@ const Hotels = () => {
       checkIn,
       checkOut,
       guests,
+    });
+    toast({
+      title: "Booking Confirmed!",
+      description: `Your stay at ${selectedHotel.name} has been booked.`,
     });
     setSelectedHotel(null);
   };
@@ -163,7 +188,7 @@ const Hotels = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {hotels.map((hotel) => (
+          {filteredHotels.map((hotel) => (
             <Card key={hotel.id} className="overflow-hidden">
               <img
                 src={hotel.image}
