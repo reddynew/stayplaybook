@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -16,7 +15,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon, MapPin, Star, Users } from "lucide-react";
+import { Calendar as CalendarIcon, MapPin, Search, Star, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -24,7 +23,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// Mock data for parks
 const parks = [
   {
     id: 1,
@@ -64,12 +62,15 @@ const Parks = () => {
   const [guests, setGuests] = useState(1);
   const [location, setLocation] = useState("");
 
+  const handleSearch = () => {
+    console.log("Searching with:", { location, date, guests });
+  };
+
   const handleBook = (park: any) => {
     setSelectedPark(park);
   };
 
   const handleConfirmBooking = () => {
-    // TODO: Implement booking logic with Supabase
     console.log("Booking confirmed", {
       park: selectedPark,
       date,
@@ -82,9 +83,8 @@ const Parks = () => {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navigation />
       <main className="container mx-auto px-4 py-8 flex-grow">
-        {/* Search Section */}
         <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <Label>Location</Label>
               <Input
@@ -127,10 +127,18 @@ const Parks = () => {
                 onChange={(e) => setGuests(parseInt(e.target.value))}
               />
             </div>
+            <div className="flex items-end">
+              <Button 
+                className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600"
+                onClick={handleSearch}
+              >
+                <Search className="mr-2 h-4 w-4" />
+                Search Parks
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Parks Listings */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {parks.map((park) => (
             <Card key={park.id} className="overflow-hidden">
@@ -178,7 +186,6 @@ const Parks = () => {
           ))}
         </div>
 
-        {/* Booking Modal */}
         <Dialog open={!!selectedPark} onOpenChange={() => setSelectedPark(null)}>
           <DialogContent>
             <DialogHeader>

@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import {
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-import { Calendar as CalendarIcon } from "lucide-react";
+import { Calendar as CalendarIcon, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   Popover,
@@ -23,7 +22,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-// Mock data for hotels
 const hotels = [
   {
     id: 1,
@@ -61,12 +59,15 @@ const Hotels = () => {
   const [guests, setGuests] = useState(1);
   const [location, setLocation] = useState("");
 
+  const handleSearch = () => {
+    console.log("Searching with:", { location, checkIn, checkOut, guests });
+  };
+
   const handleBook = (hotel: any) => {
     setSelectedHotel(hotel);
   };
 
   const handleConfirmBooking = () => {
-    // TODO: Implement booking logic with Supabase
     console.log("Booking confirmed", {
       hotel: selectedHotel,
       checkIn,
@@ -80,9 +81,8 @@ const Hotels = () => {
     <div className="min-h-screen bg-gray-50">
       <Navigation />
       <main className="container mx-auto px-4 py-8">
-        {/* Search Section */}
         <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <Label>Location</Label>
               <Input
@@ -150,10 +150,18 @@ const Hotels = () => {
                 onChange={(e) => setGuests(parseInt(e.target.value))}
               />
             </div>
+            <div className="flex items-end">
+              <Button 
+                className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600"
+                onClick={handleSearch}
+              >
+                <Search className="mr-2 h-4 w-4" />
+                Search Hotels
+              </Button>
+            </div>
           </div>
         </div>
 
-        {/* Hotel Listings */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {hotels.map((hotel) => (
             <Card key={hotel.id} className="overflow-hidden">
@@ -189,7 +197,6 @@ const Hotels = () => {
           ))}
         </div>
 
-        {/* Booking Modal */}
         <Dialog open={!!selectedHotel} onOpenChange={() => setSelectedHotel(null)}>
           <DialogContent>
             <DialogHeader>
