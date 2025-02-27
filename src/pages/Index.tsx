@@ -9,7 +9,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-gray-50">
       <Navigation />
-      <main className="container mx-auto px-4 py-16 pl-[80px]">
+      <main className="container mx-auto px-4 py-16 md:pl-24">
         <div className="text-center space-y-8">
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl">
             Your Next Adventure Awaits
