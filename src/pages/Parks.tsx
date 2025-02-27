@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -82,7 +83,14 @@ const Parks = () => {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Navigation />
-      <main className="container mx-auto px-4 py-8 flex-grow">
+      <main className="container mx-auto px-4 py-8 md:pl-24">
+        {/* Top Banner Ad */}
+        <div className="w-full h-[90px] bg-gray-100 rounded-lg mb-8 overflow-hidden">
+          <div className="w-full h-full flex items-center justify-center text-gray-400">
+            Advertisement Banner (728x90)
+          </div>
+        </div>
+
         <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
@@ -139,51 +147,74 @@ const Parks = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {parks.map((park) => (
-            <Card key={park.id} className="overflow-hidden">
-              <img
-                src={park.image}
-                alt={park.name}
-                className="h-48 w-full object-cover"
-              />
-              <CardHeader>
-                <CardTitle>{park.name}</CardTitle>
-                <CardDescription className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" /> {park.location}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{park.description}</p>
-                <div className="space-y-2">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-yellow-500" />
-                    <span>{park.rating}</span>
-                  </div>
-                  <div className="text-sm text-gray-600">
-                    <strong>Popular Attractions:</strong>
-                    <ul className="list-disc ml-4 mt-1">
-                      {park.attractions.map((attraction, index) => (
-                        <li key={index}>{attraction}</li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                <div className="mt-4">
-                  <span className="text-2xl font-bold">${park.price}</span>
-                  <span className="text-gray-500"> / person</span>
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button
-                  className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600"
-                  onClick={() => handleBook(park)}
-                >
-                  Book Tickets
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+        <div className="grid grid-cols-12 gap-6">
+          {/* Left Sidebar Ad */}
+          <div className="hidden lg:block lg:col-span-2">
+            <div className="sticky top-24 w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                Sidebar Ad (160x600)
+              </div>
+            </div>
+          </div>
+
+          {/* Main Content */}
+          <div className="col-span-12 lg:col-span-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {parks.map((park) => (
+                <Card key={park.id} className="overflow-hidden">
+                  <img
+                    src={park.image}
+                    alt={park.name}
+                    className="h-48 w-full object-cover"
+                  />
+                  <CardHeader>
+                    <CardTitle>{park.name}</CardTitle>
+                    <CardDescription className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" /> {park.location}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-gray-600 mb-4">{park.description}</p>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-1">
+                        <Star className="h-4 w-4 text-yellow-500" />
+                        <span>{park.rating}</span>
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        <strong>Popular Attractions:</strong>
+                        <ul className="list-disc ml-4 mt-1">
+                          {park.attractions.map((attraction, index) => (
+                            <li key={index}>{attraction}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    <div className="mt-4">
+                      <span className="text-2xl font-bold">${park.price}</span>
+                      <span className="text-gray-500"> / person</span>
+                    </div>
+                  </CardContent>
+                  <CardFooter>
+                    <Button
+                      className="w-full bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600"
+                      onClick={() => handleBook(park)}
+                    >
+                      Book Tickets
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Sidebar Ad */}
+          <div className="hidden lg:block lg:col-span-2">
+            <div className="sticky top-24 w-full h-[600px] bg-gray-100 rounded-lg overflow-hidden">
+              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                Sidebar Ad (160x600)
+              </div>
+            </div>
+          </div>
         </div>
 
         <Dialog open={!!selectedPark} onOpenChange={() => setSelectedPark(null)}>
