@@ -52,7 +52,8 @@ const MapView: React.FC<MapViewProps> = ({
 
         map.current.on('error', (e) => {
           console.error('Mapbox error:', e);
-          if (e.error && e.error.status === 401) {
+          // Fix: Check for unauthorized errors without relying on status property
+          if (e.error && e.error.message && e.error.message.includes('unauthorized')) {
             setError("Invalid Mapbox token. Please enter a valid access token.");
           }
         });
