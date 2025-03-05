@@ -98,11 +98,11 @@ const MapView: React.FC<MapViewProps> = ({
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="absolute inset-0 rounded-lg shadow-md" />
-      <style jsx global>{`
-        .mapboxgl-marker {
+      <style>
+        {`.mapboxgl-marker {
           cursor: pointer;
-        }
-      `}</style>
+        }`}
+      </style>
     </div>
   );
 };
