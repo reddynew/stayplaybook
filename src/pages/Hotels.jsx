@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Navigation } from "@/components/Navigation";
 import { Footer } from "@/components/Footer";
@@ -26,14 +25,26 @@ const Hotels = () => {
   const [mapZoom, setMapZoom] = useState(3.5);
   const [viewMode, setViewMode] = useState("list"); // "list" or "map"
   const [highlightedHotelId, setHighlightedHotelId] = useState(null);
-  const [mapboxToken, setMapboxToken] = useState(localStorage.getItem("mapbox_token") || "");
   
-  // Save token to localStorage when it changes
-  useEffect(() => {
-    if (mapboxToken) {
-      localStorage.setItem("mapbox_token", mapboxToken);
+  const [mapboxToken, setMapboxToken] = useState(() => {
+    const savedToken = localStorage.getItem("mapbox_token");
+    return savedToken || "";
+  });
+  
+  const [tokenInput, setTokenInput] = useState(() => {
+    const savedToken = localStorage.getItem("mapbox_token");
+    return savedToken || "";
+  });
+
+  const handleApplyToken = () => {
+    if (tokenInput.trim()) {
+      setMapboxToken(tokenInput.trim());
+      localStorage.setItem("mapbox_token", tokenInput.trim());
+      toast.success("Mapbox token applied");
+    } else {
+      toast.error("Please enter a valid token");
     }
-  }, [mapboxToken]);
+  };
 
   const handleSearch = () => {
     if (!location) {
@@ -47,7 +58,6 @@ const Hotels = () => {
     
     setFilteredHotels(filtered);
     
-    // If we have results, center the map on the first result
     if (filtered.length > 0 && filtered[0].latitude && filtered[0].longitude) {
       setMapCenter([filtered[0].longitude, filtered[0].latitude]);
       setMapZoom(10);
@@ -83,19 +93,16 @@ const Hotels = () => {
 
   const handleMarkerClick = (hotelId) => {
     setHighlightedHotelId(hotelId);
-    // Scroll to the hotel card if in dual view
     const element = document.getElementById(`hotel-${hotelId}`);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
-  // Reset highlight when filtered hotels change
   useEffect(() => {
     setHighlightedHotelId(null);
   }, [filteredHotels]);
 
-  // Prepare map markers from hotels
   const mapMarkers = filteredHotels
     .filter(hotel => hotel.latitude && hotel.longitude)
     .map(hotel => ({
@@ -124,35 +131,38 @@ const Hotels = () => {
               onSearch={handleSearch}
             />
 
-            {/* Mapbox Token Input */}
-            <div className="mb-4 p-4 border rounded-lg bg-white">
-              <Label htmlFor="mapbox-token" className="block mb-2">
-                Mapbox Token
+            <div className="mb-4 p-4 border rounded-lg bg-white shadow-sm">
+              <Label htmlFor="mapbox-token" className="block mb-2 font-medium">
+                Mapbox Token (Required for Maps)
               </Label>
               <div className="flex gap-2">
                 <Input
                   id="mapbox-token"
                   type="text"
-                  value={mapboxToken}
-                  onChange={(e) => setMapboxToken(e.target.value)}
+                  value={tokenInput}
+                  onChange={(e) => setTokenInput(e.target.value)}
                   placeholder="Enter your Mapbox access token here"
                   className="flex-1"
                 />
                 <Button
+                  onClick={handleApplyToken}
+                >
+                  Apply Token
+                </Button>
+                <Button
                   variant="outline"
                   onClick={() => {
-                    window.open("https://mapbox.com/", "_blank");
+                    window.open("https://account.mapbox.com/", "_blank");
                   }}
                 >
                   Get Token
                 </Button>
               </div>
               <p className="mt-2 text-sm text-gray-500">
-                Get your free token from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">mapbox.com</a> and enter it here to enable maps
+                Get your free token from <a href="https://account.mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">mapbox.com</a>. After creating an account, find your public token in the Access Tokens section.
               </p>
             </div>
 
-            {/* View Mode Toggle */}
             <div className="flex justify-end gap-2">
               <Button 
                 variant={viewMode === "list" ? "default" : "outline"} 
@@ -177,7 +187,6 @@ const Hotels = () => {
               </Button>
             </div>
 
-            {/* Content based on view mode */}
             {viewMode === "list" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredHotels.map((hotel) => (
@@ -194,7 +203,7 @@ const Hotels = () => {
             )}
 
             {viewMode === "map" && (
-              <div className="h-[70vh] rounded-lg overflow-hidden">
+              <div className="h-[70vh] rounded-lg overflow-hidden border shadow-md">
                 <MapView 
                   markers={mapMarkers} 
                   center={mapCenter} 
@@ -219,7 +228,7 @@ const Hotels = () => {
                     </div>
                   ))}
                 </div>
-                <div className="h-[70vh] rounded-lg overflow-hidden sticky top-24">
+                <div className="h-[70vh] rounded-lg overflow-hidden border shadow-md sticky top-24">
                   <MapView 
                     markers={mapMarkers} 
                     center={mapCenter} 

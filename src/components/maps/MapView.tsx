@@ -28,16 +28,31 @@ const MapView: React.FC<MapViewProps> = ({
   const map = useRef<mapboxgl.Map | null>(null);
   const markersRef = useRef<{ [key: number]: mapboxgl.Marker }>({});
   const [error, setError] = useState<string | null>(null);
+  const [mapInitialized, setMapInitialized] = useState(false);
+
+  // Clear any previous errors when token changes
+  useEffect(() => {
+    if (mapboxToken) {
+      setError(null);
+    }
+  }, [mapboxToken]);
 
   useEffect(() => {
-    // Initialize Mapbox only once
-    if (!map.current && mapContainer.current) {
-      if (!mapboxToken) {
+    // Clean up previous map instance if it exists
+    if (map.current) {
+      map.current.remove();
+      map.current = null;
+    }
+
+    // Initialize Mapbox
+    if (mapContainer.current && mapboxToken) {
+      if (!mapboxToken.trim()) {
         setError("Please enter a valid Mapbox access token");
         return;
       }
       
       try {
+        console.log("Initializing map with token:", mapboxToken.substring(0, 5) + "...");
         mapboxgl.accessToken = mapboxToken;
         
         map.current = new mapboxgl.Map({
@@ -50,17 +65,26 @@ const MapView: React.FC<MapViewProps> = ({
         // Add navigation controls
         map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
+        map.current.on('load', () => {
+          console.log("Map loaded successfully");
+          setMapInitialized(true);
+        });
+
         map.current.on('error', (e) => {
           console.error('Mapbox error:', e);
           // Fix: Check for unauthorized errors without relying on status property
           if (e.error && e.error.message && e.error.message.includes('unauthorized')) {
             setError("Invalid Mapbox token. Please enter a valid access token.");
+          } else {
+            setError(`Map error: ${e.error ? e.error.message : 'Unknown error'}`);
           }
         });
       } catch (err) {
         console.error('Error initializing map:', err);
-        setError("Error initializing map. Please check your Mapbox token.");
+        setError(`Error initializing map: ${err instanceof Error ? err.message : 'Unknown error'}`);
       }
+    } else if (!mapboxToken) {
+      setError("Please enter a valid Mapbox access token");
     }
 
     return () => {
@@ -77,18 +101,18 @@ const MapView: React.FC<MapViewProps> = ({
 
   // Update map center and zoom when props change
   useEffect(() => {
-    if (map.current) {
+    if (map.current && mapInitialized) {
       map.current.flyTo({
         center: center,
         zoom: zoom,
         essential: true
       });
     }
-  }, [center, zoom]);
+  }, [center, zoom, mapInitialized]);
 
   // Update markers when they change
   useEffect(() => {
-    if (!map.current) return;
+    if (!map.current || !mapInitialized) return;
 
     // Remove all existing markers
     Object.values(markersRef.current).forEach(marker => marker.remove());
@@ -119,7 +143,7 @@ const MapView: React.FC<MapViewProps> = ({
 
       markersRef.current[marker.id] = mapboxMarker;
     });
-  }, [markers, onMarkerClick]);
+  }, [markers, onMarkerClick, mapInitialized]);
 
   if (error) {
     return (
