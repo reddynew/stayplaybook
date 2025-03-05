@@ -10,6 +10,8 @@ import { HotelCard } from "@/components/hotels/HotelCard";
 import { BookingDialog } from "@/components/hotels/BookingDialog";
 import MapView from "@/components/maps/MapView";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MapIcon, ListIcon } from "lucide-react";
 
 const Hotels = () => {
@@ -24,6 +26,14 @@ const Hotels = () => {
   const [mapZoom, setMapZoom] = useState(3.5);
   const [viewMode, setViewMode] = useState("list"); // "list" or "map"
   const [highlightedHotelId, setHighlightedHotelId] = useState(null);
+  const [mapboxToken, setMapboxToken] = useState(localStorage.getItem("mapbox_token") || "");
+  
+  // Save token to localStorage when it changes
+  useEffect(() => {
+    if (mapboxToken) {
+      localStorage.setItem("mapbox_token", mapboxToken);
+    }
+  }, [mapboxToken]);
 
   const handleSearch = () => {
     if (!location) {
@@ -114,6 +124,34 @@ const Hotels = () => {
               onSearch={handleSearch}
             />
 
+            {/* Mapbox Token Input */}
+            <div className="mb-4 p-4 border rounded-lg bg-white">
+              <Label htmlFor="mapbox-token" className="block mb-2">
+                Mapbox Token
+              </Label>
+              <div className="flex gap-2">
+                <Input
+                  id="mapbox-token"
+                  type="text"
+                  value={mapboxToken}
+                  onChange={(e) => setMapboxToken(e.target.value)}
+                  placeholder="Enter your Mapbox access token here"
+                  className="flex-1"
+                />
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    window.open("https://mapbox.com/", "_blank");
+                  }}
+                >
+                  Get Token
+                </Button>
+              </div>
+              <p className="mt-2 text-sm text-gray-500">
+                Get your free token from <a href="https://mapbox.com/" target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">mapbox.com</a> and enter it here to enable maps
+              </p>
+            </div>
+
             {/* View Mode Toggle */}
             <div className="flex justify-end gap-2">
               <Button 
@@ -162,6 +200,7 @@ const Hotels = () => {
                   center={mapCenter} 
                   zoom={mapZoom}
                   onMarkerClick={handleMarkerClick}
+                  mapboxToken={mapboxToken}
                 />
               </div>
             )}
@@ -186,6 +225,7 @@ const Hotels = () => {
                     center={mapCenter} 
                     zoom={mapZoom}
                     onMarkerClick={handleMarkerClick}
+                    mapboxToken={mapboxToken}
                   />
                 </div>
               </div>
