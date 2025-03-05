@@ -12,7 +12,9 @@ export const HotelProvider = ({ children }) => {
       price: 299,
       rating: 4.8,
       image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      description: "Experience luxury living with ocean views and world-class amenities."
+      description: "Experience luxury living with ocean views and world-class amenities.",
+      latitude: 25.7617,
+      longitude: -80.1918
     },
     {
       id: 2,
@@ -21,7 +23,9 @@ export const HotelProvider = ({ children }) => {
       price: 199,
       rating: 4.5,
       image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      description: "Cozy mountain retreat with stunning views and ski-in/ski-out access."
+      description: "Cozy mountain retreat with stunning views and ski-in/ski-out access.",
+      latitude: 39.1911,
+      longitude: -106.8175
     },
     {
       id: 3,
@@ -30,7 +34,9 @@ export const HotelProvider = ({ children }) => {
       price: 349,
       rating: 4.7,
       image: "https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      description: "Sophisticated urban oasis in the heart of Manhattan."
+      description: "Sophisticated urban oasis in the heart of Manhattan.",
+      latitude: 40.7128,
+      longitude: -74.0060
     }
   ]);
 
